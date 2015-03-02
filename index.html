@@ -9,54 +9,7 @@
 		<link rel="stylesheet" href="css/app.css">
 	</head>
 	<body ng-controller="MainCtrl as app">
-		<section id="todoapp" >
-			<header id="header">
-				<h1>todos</h1>
-				<form ng-submit="app.addTodo()">
-				<input id="new-todo" placeholder="What needs to be done?"  ng-model="app.newTodo" autofocus>
-                </form>
-			</header>
-			<!-- This section should be hidden by default and shown when there are todos -->
-			<section id="main">
-				<input id="toggle-all" type="checkbox" ng-model="allDone" ng-click="app.allCompleted(allDone)">
-				<label for="toggle-all">Mark all as complete</label>
-				<ul id="todo-list">
-					<!-- These are here just to show the structure of the list items -->
-					<!-- List items should get the class `editing` when editing and `completed` when marked as completed -->
-					<li ng-class="{completed: todos.completed, editing: todos.todoEdit, active: todos.active && !todos.completed}" class="active" ng-repeat="todos in app.todos">
-						<div class="view" >
-							<input class="toggle" type="checkbox" ng-click="app.completed(todos.completed)" ng-model="todos.completed">
-							<label ng-dblclick="app.editTodo(todos)">{{todos.content}}</label>
-							<button class="destroy" ng-click=app.deleteTodo(todos)></button>
-						</div>
-						<form ng-submit="app.editing(todos)">
-						<input class="edit" ng-model="todos.content">
-						</form>
-					</li>
-				</ul>
-			</section>
-			<!-- This footer should hidden by default and shown when there are todos -->
-			<footer id="footer" ng-show="app.todos.length">
-				<!-- This should be `0 items left` by default -->
-				<span id="todo-count" ng-model="app.todos.length"><strong>{{app.todos.length | filter:{completed :false} }}</strong> 
-				    <ng-pluralize count="app.todos.length" when="{'1': 'item left', 'other': 'items left' }"></ng-pluralize>
-				</span>
-				<!-- Remove this if you don't implement routing -->
-				<ul id="filters">
-					<li>
-						<a class="selected" href="#/">All</a>
-					</li>
-					<li>
-						<a href="#/active">Active</a>
-					</li>
-					<li>
-						<a href="#/completed">Completed</a>
-					</li>
-				</ul>
-				<!-- Hidden if no completed items are left ↓ -->
-				<button id="clear-completed" ng-show="app.noComplete()" ng-click="app.clearCompleted()"></button>
-			</footer>
-		</section>
+		<div ui-view></div>
 		<footer id="info">
 			<p>Double-click to edit a todo</p>
 			<p>Created by <a href="logan@loganarnett.com">Logan Arnett</a></p>
@@ -72,6 +25,7 @@
         <script src="https://cdn.firebase.com/libs/angularfire/0.9.2/angularfire.min.js"></script>
         <script src="bower_components/lodash/dist/lodash.min.js"></script>
         <script src="bower_components/restangular/dist/restangular.min.js"></script>
+        <script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
 		<script src="js/app.js"></script>
 	</body>
 </html>

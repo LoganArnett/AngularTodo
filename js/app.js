@@ -1,6 +1,6 @@
 'use strict'
 
-angular.module('todoAngular', ['firebase', 'restangular'])
+angular.module('todoAngular', ['firebase', 'restangular', 'ui.router'])
 
 .config(function($stateProvider, $urlRouterProvider) {
 
