@@ -1,6 +1,23 @@
 'use strict'
 
-angular.module('todoAngular', ['firebase'])
+angular.module('todoAngular', ['firebase', 'restangular'])
+
+.config(function($stateProvider, $urlRouterProvider) {
+
+  $stateProvider
+    .state('login', {
+      url: '/login',
+      templateUrl: 'states/login.html'
+    })
+    
+    .state('todo', {
+      url: '/todo',
+      templateUrl: 'states/todo.html'
+    })
+  
+  $urlRouterProvider.otherwise('/login');
+    
+})
 
 .factory('Firebase', function(){
   return new Firebase("https://todangular.firebaseio.com/Todos");
@@ -217,6 +234,41 @@ angular.module('todoAngular', ['firebase'])
             })
         }
     }
+    
+    this.login = Auth.login;
+
+  this.logout = Auth.logout;
+
+  Auth.onAuth(function(user){
+    self.user = user;
+              console.log(user)
+    if (user === null ){
+      return $location.path('/login')
+    }
+    else {
+      return $location.path('/main')
+    }
+  });
+
+  this.loggedIn = Auth.loggedIn;
+
+  this.outDoor = function(){
+    if($location.path() === "/login"){
+      return false;
+    }
+    else {
+      return true;
+    }
+  }
+  
+  this.goHome = function(){
+    if($location.path() === "/" || $location.path() === "/login" || $location.path() === "/main"){
+      return false;
+    }
+    else {
+      return true;
+    }
+  }
 })
 
 
