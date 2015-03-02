@@ -1,9 +1,110 @@
 'use strict'
 
-angular.module('todoAngular', [])
+angular.module('todoAngular', ['firebase'])
 
-.controller('MainCtrl', ['filterFilter', function(filterFilter){
-    var self = this;
+.factory('Firebase', function(){
+  return new Firebase("https://todangular.firebaseio.com/Todos");
+})
+
+/**
+* Auth(entication) Service
+*
+* @method {Promise} login
+* @method {undefined} logout
+* @method {undefined} onAuth
+*
+* @TODO: make onAuth return a Promise?
+*/
+.factory('Auth', function(Firebase, $firebaseAuth, $firebase){
+  var auth = $firebaseAuth(Firebase);
+  var currentUser = {};
+
+  return {
+    /**
+    * Wrapper for `$firebaseAuth.$onAuth()` that filters the `auth` object
+    * through the `updateUser()` function
+    */
+    onAuth: function(cb){
+      auth.$onAuth(function(data){
+        cb(updateUser(data));
+      });
+    },
+    /**
+    * Wrapper for `$firebaseAuth.$authWithOAuthPopup()` that invokes the
+    * correct provider code.
+    */
+    login: function($location){
+         console.log("Hello?!")
+      return auth.$authWithOAuthPopup('facebook')
+    },
+
+    loggedIn: function(){
+      if(auth.$getAuth()){
+        return true;
+      }
+    },
+    /**
+    * Wrapper for `$firebaseAuth.$unauth()`
+    */
+    logout: function($location){
+      auth.$unauth();
+    },
+    /**
+    *Get the current user.
+    */
+    getUser: function(){
+      return currentUser;
+    }
+  }; // END service
+
+  /**
+  * Tranform the `authdUser` object from `$firebaseAuth` into a full User
+  * record in the `/users` collection.
+  *
+  * @param {Object} authdUser from $firebaseAuth.getAuth()
+  * @return {Object} from $firebase.$asObject()
+  */
+  function updateUser(authdUser){
+    if ( authdUser === null ){
+      return null;
+    }
+
+    /**
+    * Create a reference to the users collection within Firebase
+    * Then create a child of the users collection named after the
+    * authdUser's Facebook ID
+    */
+    var user = Firebase.child('users').child(authdUser.facebook.id);
+
+    // Update the authdUser's information in Firebase
+    user.update({
+      uid: authdUser.facebook.id,
+      facebook: authdUser.facebook,
+      fullName: authdUser.facebook.displayName,
+      avatarUrl: authdUser.facebook.cachedUserProfile.picture.data.url,
+    });
+
+    // Set user to the object reference of authdUser
+    user = $firebase(Firebase
+      .child('users')
+      .child(authdUser.facebook.id)
+    ).$asObject();
+
+    //stores the user information for use elsewhere
+    currentUser = user;
+
+    return user;
+   }
+  }) // END updateUser
+
+.controller('MainCtrl', function(filterFilter, $firebase, Firebase, Auth){
+    var self = this,
+    ref = Firebase,
+    sync = $firebase(ref);
+    this.todos = sync.$asArray();
+    
+    
+
 
 // Empty input
     this.newTodo = '';
@@ -33,6 +134,10 @@ angular.module('todoAngular', [])
                 "completed": false,
                 "active": true
             });
+        
+        this.todos.$add({content: newTask}).then(function(newChildRef) {
+  console.log("added record with id " + newChildRef.key());
+   });
         // Return new todo input to empty and increment counter
             this.itemsLeft = this.todoList.length
             return this.newTodo = '';   
@@ -61,9 +166,11 @@ angular.module('todoAngular', [])
     }
     
 // Delete individual todos
-    this.deleteTodo = function(todos){
-        this.todoList.splice(this.todoList.indexOf(todos), 1);
-        self.items = self.todoList.length;
+    this.deleteTodo = function(id){
+        console.log(id)
+//        this.todoList.splice(this.todoList.indexOf(todos), 1);
+//        self.items = self.todoList.length;
+        this.todos.$remove(id);
     }
     
 // Add completed for strikethrough
@@ -110,6 +217,6 @@ angular.module('todoAngular', [])
             })
         }
     }
-}])
+})
 
 
