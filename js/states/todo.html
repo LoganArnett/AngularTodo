@@ -1,34 +1,35 @@
-<section id="todoapp" >
+<section id="todoapp" ng-controller="TodoCtrl as task">
 			<header id="header">
 				<h1>todos</h1>
-				<form ng-submit="app.addTodo()">
-				<input id="new-todo" placeholder="What needs to be done?"  ng-model="app.newTodo" autofocus>
+				<form ng-submit="task.addTodo()">
+				<input id="new-todo" placeholder="What needs to be done?"  ng-model="task.newTodo" autofocus>
                 </form>
 			</header>
 			<!-- This section should be hidden by default and shown when there are todos -->
 			<section id="main">
-				<input id="toggle-all" type="checkbox" ng-model="allDone" ng-click="app.allCompleted(allDone)">
+				<input id="toggle-all" type="checkbox" ng-model="allDone" ng-click="task.allCompleted(allDone)">
 				<label for="toggle-all">Mark all as complete</label>
 				<ul id="todo-list">
 					<!-- These are here just to show the structure of the list items -->
 					<!-- List items should get the class `editing` when editing and `completed` when marked as completed -->
-					<li ng-class="{completed: todos.completed, editing: todos.todoEdit, active: todos.active && !todos.completed}" class="active" ng-repeat="todos in app.todos">
+					<li ng-class="{completed: todos.completed, editing: todos.todoEdit, active: todos.active && !todos.completed}" class="active" ng-repeat="(id, todos) in task.todos">
 						<div class="view" >
-							<input class="toggle" type="checkbox" ng-click="app.completed(todos.completed)" ng-model="todos.completed">
-							<label ng-dblclick="app.editTodo(todos)">{{todos.content}}</label>
-							<button class="destroy" ng-click=app.deleteTodo(todos)></button>
+							<input class="toggle" type="checkbox" ng-click="task.done(todos)" ng-model="todos.completed">
+							<label ng-dblclick="task.editTodo(todos)">{{todos.content}}</label>
+							<button class="destroy" ng-click=task.deleteTodo(todos)></button>
 						</div>
-						<form ng-submit="app.editing(todos)">
+						<form ng-submit="task.editing(todos)">
 						<input class="edit" ng-model="todos.content">
 						</form>
 					</li>
+
 				</ul>
 			</section>
 			<!-- This footer should hidden by default and shown when there are todos -->
-			<footer id="footer" ng-show="app.todos.length">
+			<footer id="footer" ng-show="task.todos.length">
 				<!-- This should be `0 items left` by default -->
-				<span id="todo-count" ng-model="app.todos.length"><strong>{{app.todos.length | filter:{completed :false} }}</strong> 
-				    <ng-pluralize count="app.todos.length" when="{'1': 'item left', 'other': 'items left' }"></ng-pluralize>
+				<span id="todo-count" ng-model="task.todos.length"><strong>{{task.todos.length | filter:{completed :true} }}</strong>
+				    <ng-pluralize count="task.todos.length" when="{'1': 'item left', 'other': 'items left' }"></ng-pluralize>
 				</span>
 				<!-- Remove this if you don't implement routing -->
 				<ul id="filters">
@@ -41,8 +42,14 @@
 					<li>
 						<a href="#/completed">Completed</a>
 					</li>
+					<li>
+						<button ng-click="task.active()">Activate</button>
+					</li>
+
 				</ul>
 				<!-- Hidden if no completed items are left ↓ -->
-				<button id="clear-completed" ng-show="app.noComplete()" ng-click="app.clearCompleted()"></button>
+				<button id="clear-completed" ng-show="task.noComplete()" ng-click="task.clearCompleted()"></button>
+
 			</footer>
+
 		</section>

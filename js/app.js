@@ -108,7 +108,7 @@ angular.module('todoAngular', ['firebase', 'restangular', 'ui.router'])
 
     // Set user to the object reference of authdUser
     user = $firebase(Firebase
-      .child('users')
+      .child('Users')
       .child(authdUser.facebook.id)
     ).$asObject();
 
