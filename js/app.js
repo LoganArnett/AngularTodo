@@ -12,12 +12,12 @@ angular.module('todoAngular', ['firebase', 'restangular', 'ui.router'])
   $stateProvider
     .state('login', {
       url: '/login',
-      templateUrl: '../js/states/login.html'
+      templateUrl: 'js/states/login.html'
     })
     
     .state('todo', {
       url: '/todo',
-      templateUrl: '../js/states/todo.html'
+      templateUrl: 'js/states/todo.html'
     })
   
   $urlRouterProvider.otherwise('/login');
