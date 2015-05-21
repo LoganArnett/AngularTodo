@@ -15,6 +15,8 @@ angular.module('todoAngular')
     })
     };
 
+    this.allDone;
+
    this.productIndex = function(index){
      console.log(index);
    }
@@ -135,20 +137,34 @@ angular.module('todoAngular')
         }
         return false;
     }
+    this.countLeft = 0;
+    this.remainingCount = function(todos){
+      self.countLeft = todos.length;
+      todos.forEach(function(todo){
+        if(todo.completed == true){
+          return self.countLeft = self.countLeft - 1;
+        }
+        return self.countLeft;
+      })
+      if(self.countLeft == 0) {
+        return self.allDone = true;
+      }
+      if(self.countLeft > 0) {
+        self.allDone = false;
+      }
+    }
 
 // Check off every todo at once
-    this.allCompleted = function(allDone){
-        var list = this.todoList
-        if(allDone == true){
-            list.forEach(function(todo){
-                self.itemsLeft = 0;
+    this.allCompleted = function(todos){
+        console.log(self.allDone)
+        if(self.allDone == false){
+            todos.forEach(function(todo){
                 return todo.completed = true;
             })
 
         }
         else {
-            list.forEach(function(todo){
-                self.itemsLeft = list.length
+            todos.forEach(function(todo){
                 return todo.completed = false;
             })
         }

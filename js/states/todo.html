@@ -7,7 +7,7 @@
 			</header>
 			<!-- This section should be hidden by default and shown when there are todos -->
 			<section id="main">
-				<input id="toggle-all" type="checkbox" ng-model="allDone" ng-click="task.allCompleted(allDone)">
+				<input id="toggle-all" type="checkbox" ng-model="task.allDone" ng-click="task.allCompleted(task.todos)">
 				<label for="toggle-all">Mark all as complete</label>
 				<ul id="todo-list">
 					<!-- These are here just to show the structure of the list items -->
@@ -28,8 +28,9 @@
 			<!-- This footer should hidden by default and shown when there are todos -->
 			<footer id="footer" ng-show="task.todos.length">
 				<!-- This should be `0 items left` by default -->
-				<span id="todo-count" ng-model="task.todos.length"><strong>{{task.todos.length | filter:{completed :true} }}</strong>
+				<span id="todo-count" ng-model="task.countLeft"><strong>{{task.countLeft}}</strong>
 				    <ng-pluralize count="task.todos.length" when="{'1': 'item left', 'other': 'items left' }"></ng-pluralize>
+						<span ng-hide="true">{{task.remainingCount(task.todos)}}</span>
 				</span>
 				<!-- Remove this if you don't implement routing -->
 				<ul id="filters">
